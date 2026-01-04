@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { Config } from './src/config/config';
 
 /**
  * Playwright configuration file.
@@ -6,6 +7,9 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
+  forbidOnly:!!process.env.CI,
+  retries:process.env.CI? 2:1,
+  workers:process.env.CI? 4:undefined,
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
   expect: {
@@ -14,12 +18,17 @@ export default defineConfig({
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter:[
+    ['line'],
+    ['allure-playwright', { outputFolder: 'allure-results' }]
+  ],
   /* Shared settings for all the projects below. */
   use: {
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    baseURL: Config.baseUrl,
+    trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
+    video:'retain-on-failure'
   },
 
   /* Configure projects for major browsers */
