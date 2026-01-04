@@ -1,4 +1,5 @@
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
+import { Locator } from "@playwright/test";
 
 /**
  * The BasePage class acts as a parent for all Page Objects.
@@ -16,5 +17,15 @@ export abstract class BasePage {
      */
     protected async navigateTo(path: string = "") {
         await this.page.goto(path);
+    }
+
+    /**
+     * @description Generic assertion to verify if a locator contains the expected text.
+     * Playwright's toHaveText has a built-in auto-retry mechanism.
+     * @param locator The Playwright Locator to check.
+     * @param expectedText The string value expected to be present in the element.
+     */
+    public async verifyElementText(locator: Locator, expectedText: string): Promise<void> {
+        await expect(locator, `Expected text '${expectedText}' was not found in the element`).toHaveText(expectedText);
     }
 }

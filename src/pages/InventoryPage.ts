@@ -6,22 +6,22 @@ import { BasePage } from "./BasePage";
  */
 export class InventoryPage extends BasePage{
 
-    private readonly firstProductAddBtn: Locator;
+    private readonly firstProductAddRemoveBtn: Locator;
     private readonly shoppingCartBadge: Locator;
 
     constructor(page: Page) {
         super(page);
         // Locator for the first 'Add to cart' button
-        this.firstProductAddBtn = page.locator(".inventory_item button").first();
+        this.firstProductAddRemoveBtn = page.locator(".btn_inventory").first();
         // Locator for the cart quantity badge
         this.shoppingCartBadge = page.locator(".shopping_cart_badge");
         this.sortContainer = '.product_sort_container';
         this.itemPrices = '.inventory_item_price';
-        this.inventoryButtons = '.btn_inventory';
+        this.inventoryButtons = page.locator('.btn_inventory');
     }
 
     public async addFirstProductToCart(): Promise<void> {
-        await this.firstProductAddBtn.click();
+        await this.firstProductAddRemoveBtn.click();
     }
 
     public async getCartCount(): Promise<string | null> {
@@ -43,5 +43,8 @@ export class InventoryPage extends BasePage{
 
     public async getFirstItemButton() {
         return this.page.locator(this.inventoryButtons).first();
+    }
+    public get adRemoveBtn(){
+        return this.inventoryButtons.first()
     }
 }

@@ -16,26 +16,29 @@ test.describe('SauceDemo: Advanced Inventory Workflows', () => {
 
     test('should sort products by price (Low to High)', async ({ page }) => {
         // Step 1: Change sorting to Low to High
-        await inventoryPage.sortProductsBy('lohi');
+        await test.step('Change sorting to Low to High',async()=>{
+           await inventoryPage.sortProductsBy('lohi');
+        })
+        
 
         // Step 2: Validate the logic
-        const numericPrices = await inventoryPage.getAllPricesAsNumbers();
-        
+        await test.step('Validate the logic',async()=>{
+        const numericPrices = await inventoryPage.getAllPricesAsNumbers(); 
         const sortedPrices = [...numericPrices].sort((a, b) => a - b);
         expect(numericPrices, 'Prices should be sorted in ascending order').toEqual(sortedPrices);
+        })
+        
     });
 
     test('should toggle button state between "Add to cart" and "Remove"', async ({ page }) => {
-        const firstItemBtn = page.locator('.btn_inventory').first();
-        
         await test.step('Add item and verify button change', async () => {
-            await firstItemBtn.click();
-            await expect(firstItemBtn).toHaveText('Remove');
+            await inventoryPage.adRemoveBtn.click();
+            await inventoryPage.verifyElementText(inventoryPage.adRemoveBtn,'Remove')
         });
 
         await test.step('Remove item and verify button reverts', async () => {
-            await firstItemBtn.click();
-            await expect(firstItemBtn).toHaveText('Add to cart');
+            await inventoryPage.adRemoveBtn.click();
+            await inventoryPage.verifyElementText(inventoryPage.adRemoveBtn,'Add to cart')
         });
     });
 });
