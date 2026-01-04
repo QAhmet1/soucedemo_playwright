@@ -19,8 +19,6 @@ test.describe('SauceDemo: Advanced Inventory Workflows', () => {
         await test.step('Change sorting to Low to High',async()=>{
            await inventoryPage.sortProductsBy('lohi');
         })
-        
-
         // Step 2: Validate the logic
         await test.step('Validate the logic',async()=>{
         const numericPrices = await inventoryPage.getAllPricesAsNumbers(); 
@@ -35,7 +33,6 @@ test.describe('SauceDemo: Advanced Inventory Workflows', () => {
             await inventoryPage.adRemoveBtn.click();
             await inventoryPage.verifyElementText(inventoryPage.adRemoveBtn,'Remove')
         });
-
         await test.step('Remove item and verify button reverts', async () => {
             await inventoryPage.adRemoveBtn.click();
             await inventoryPage.verifyElementText(inventoryPage.adRemoveBtn,'Add to cart')
