@@ -1,5 +1,5 @@
 // tests/ui/example.spec.ts
-import { test, expect } from '@playwright/test'; // FIX: This was missing
+import { test, expect } from '@playwright/test'; 
 import { InventoryPage } from '@pages/InventoryPage';
 import { Config } from '@config/config';
 
