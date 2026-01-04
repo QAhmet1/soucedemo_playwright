@@ -16,20 +16,14 @@ interface EnvData {
  */
 export const Environments: Record<string, EnvData> = {
     qa: {
-        baseUrl: 'https://qa.saucedemo.com',
-        apiUrl: 'https://api-qa.saucedemo.com',
+        baseUrl: process.env.QA_URL || 'https://www.saucedemo.com',
+        apiUrl: process.env.QA_API_URL || 'https://api-qa.saucedemo.com',
         adminUser: process.env.QA_USER|| '',
         adminPass: process.env.QA_PASS || ''
     },
-    staging: {
-        baseUrl: 'https://staging.saucedemo.com',
-        apiUrl: 'https://api-staging.saucedemo.com',
-        adminUser: process.env.STG_PASS || '',
-        adminPass: process.env.STG_PASS || ''
-    },
     prod: {
-        baseUrl: 'https://www.saucedemo.com',
-        apiUrl: 'https://api.saucedemo.com',
+        baseUrl: process.env.PROD_URL || 'https://www.saucedemo.com',
+        apiUrl: process.env.PROD_API_URL ||'https://api.saucedemo.com',
         adminUser: process.env.PROD_USER || '', // Should be handled via Secret Manager in CI/CD
         adminPass: process.env.PROD_PASS || '' 
     }

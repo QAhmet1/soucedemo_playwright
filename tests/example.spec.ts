@@ -1,30 +1,32 @@
 import { test, expect } from '@playwright/test';
-import {Config} from '../src/config/config'
-import { LoginPage } from '../src/pages/LoginPage'
-import { InventoryPage} from '../src/pages/InventoryPage';
+import { InventoryPage } from '../src/pages/InventoryPage';
+import { Config } from '@config/config';
 
+/**
+ * Describe blokları testleri mantıksal gruplara ayırır.
+ */
+test.describe('SauceDemo Inventory Tests', () => {
+    let inventoryPage: any;
 
+    // Her testten önce çalışacak ortak adımlar
+    test.beforeEach(async ({ page }) => {
+        inventoryPage = new InventoryPage(page);
+        // Session storage sayesinde direkt inventory sayfasına gidebiliriz!
+        await page.goto(`${Config.baseUrl}/inventory.html`);
+    });
 
+    test('should display the inventory page', async ({ page }) => {
+        await expect(page).toHaveURL(/inventory.html/);
+    });
 
-test('Souce demo title test', async ({ page }) => {
-    const lp=new LoginPage(page);
-    const inventoryPage=new InventoryPage(page)
-   // 1. Navigate to dynamic URL
-    await page.goto(Config.baseUrl);
+    test('should add the first product to the cart', async () => {
+        await inventoryPage.addFirstProductToCart();
+        const cartCount = await inventoryPage.getCartCount();
+        expect(cartCount).toBe("1");
+    });
 
-    // 2. Perform login using dynamic credentials from config
-    await lp.login(Config.adminUser, Config.adminPass);
-
-    // 3. Assertion: Verify we are on the inventory page
-    await expect(page).toHaveURL(/inventory.html/);
-   
-
-    // 4. Add first item to the cart
-    await inventoryPage.addFirstProductToCart()
-
-    // 5. Assertion: Verify cart badge shows '1'
-    const cartCount = await inventoryPage.getCartCount();
-    expect(cartCount).toBe("1");
-    await page.pause()
-
+    test('should have items in the inventory list', async ({ page }) => {
+        const items = page.locator('.inventory_item');
+        await expect(items).toHaveCount(6);
+    });
 });
