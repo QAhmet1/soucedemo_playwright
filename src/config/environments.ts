@@ -23,7 +23,7 @@ export const Environments: Record<string, EnvData> = {
     },
     prod: {
         baseUrl: process.env.PROD_URL || 'https://www.saucedemo.com',
-        apiUrl: process.env.PROD_API_URL ||'https://api.saucedemo.com',
+        apiUrl: process.env.PROD_API_URL ||'',
         adminUser: process.env.PROD_USER || '', // Should be handled via Secret Manager in CI/CD
         adminPass: process.env.PROD_PASS || '' 
     }
