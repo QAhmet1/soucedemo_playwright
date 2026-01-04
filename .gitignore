@@ -5,3 +5,5 @@ blob-report/
 playwright/.cache/
 .env
 .last-run.json
+allure-report/
+allure-results/
