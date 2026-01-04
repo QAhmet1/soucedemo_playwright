@@ -2,49 +2,53 @@ import { Page, Locator } from "@playwright/test";
 import { BasePage } from "./BasePage";
 
 /**
- * InventoryPage handles actions on the products listing screen.
+ * @description InventoryPage manages all interactions and validations on the product listing screen.
  */
-export class InventoryPage extends BasePage{
-
-    private readonly firstProductAddRemoveBtn: Locator;
+export class InventoryPage extends BasePage {
+    // 1. All locators are defined at the top as private and readonly
     private readonly shoppingCartBadge: Locator;
+    private readonly sortContainer: Locator; 
+    private readonly itemPrices: Locator;    
+    private readonly inventoryButtons: Locator;// add/remove buttons
 
     constructor(page: Page) {
         super(page);
-        // Locator for the first 'Add to cart' button
-        this.firstProductAddRemoveBtn = page.locator(".btn_inventory").first();
-        // Locator for the cart quantity badge
+        // 2. Consistent initialization: Everything is a Locator object now
         this.shoppingCartBadge = page.locator(".shopping_cart_badge");
-        this.sortContainer = '.product_sort_container';
-        this.itemPrices = '.inventory_item_price';
+        this.sortContainer = page.locator('.product_sort_container');
+        this.itemPrices = page.locator('.inventory_item_price');
         this.inventoryButtons = page.locator('.btn_inventory');
     }
 
+    // --- ACTIONS ---
+
     public async addFirstProductToCart(): Promise<void> {
-        await this.firstProductAddRemoveBtn.click();
+        await this.inventoryButtons.first().click();
     }
+
+    public async sortProductsBy(option: 'lohi' | 'hilo' | 'az' | 'za'): Promise<void> {
+        // Clean call: No need for this.page.locator() anymore
+        await this.sortContainer.selectOption(option);
+    }
+
+    // --- DATA RETRIEVAL ---
 
     public async getCartCount(): Promise<string | null> {
         return await this.shoppingCartBadge.textContent();
     }
 
-    public async sortProductsBy(option: 'lohi' | 'hilo' | 'az' | 'za') {
-        await this.page.selectOption(this.sortContainer, option);
-    }
-
-    /**
-     * @description High-level action: Extracts and formats prices into numbers.
-     * Moving the 'map' logic here keeps tests clean.
-     */
     public async getAllPricesAsNumbers(): Promise<number[]> {
-        const priceTexts = await this.page.locator(this.itemPrices).allInnerTexts();
+        // More readable and consistent access
+        const priceTexts = await this.itemPrices.allInnerTexts();
         return priceTexts.map(p => parseFloat(p.replace('$', '')));
     }
 
-    public async getFirstItemButton() {
-        return this.page.locator(this.inventoryButtons).first();
-    }
-    public get adRemoveBtn(){
-        return this.inventoryButtons.first()
+    // --- GETTERS FOR ASSERTIONS ---
+
+    /**
+     * @description Public getter to expose the first button for assertions in test files.
+     */
+    public get adRemoveBtn(): Locator {
+        return this.inventoryButtons.first();
     }
 }
