@@ -7,3 +7,5 @@ playwright/.cache/
 .last-run.json
 allure-report/
 allure-results/
+playwright/.auth/
+user.json
