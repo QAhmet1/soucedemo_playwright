@@ -14,13 +14,18 @@ on:
 
   # 2. Automated schedule (Cron) - 07:00 Belgium Time
   # Belgium is UTC+1 (Winter) or UTC+2 (Summer). 
-  # This cron is set to 05:00 UTC, which is 07:00 in Belgium Summer Time.
+  # 05:00 UTC = 06:00 Belgium Winter / 07:00 Belgium Summer.
   schedule:
     - cron: '0 5 * * *'
 
   # 3. Trigger on push to main branches
   push:
     branches: [ main, master ]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   test:
@@ -56,17 +61,29 @@ jobs:
         PROD_PASS: ${{ secrets.PROD_PASS }}
         PROD_API_URL: ${{ secrets.PROD_API_URL }}
 
-    - name: Generate Allure Report
+    - name: Get Allure history
+      uses: actions/checkout@v4
       if: always()
-      run: npm run allure:generate
-
-    - name: Upload Allure Report as Artifact
-      if: always()
-      uses: actions/upload-artifact@v4
+      continue-on-error: true
       with:
-        name: allure-report
-        path: allure-report/
-        retention-days: 15
+        ref: gh-pages
+        path: gh-pages
+
+    - name: Allure Report Action from marketplace
+      uses: simple-elf/allure-report-action@master
+      if: always()
+      with:
+        allure_results: allure-results
+        allure_history: allure-history
+        keep_reports: 20
+
+    - name: Deploy Allure Report to GitHub Pages
+      if: always()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./allure-report
+        publish_branch: gh-pages
 
     - name: Upload Playwright HTML Report
       if: always()
