@@ -1,10 +1,9 @@
 name: Playwright Multi-Environment Tests
 on:
-  # 1. Manual trigger with environment selection
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Select the environment to run tests'
+        description: 'Select Environment'
         required: true
         default: 'qa'
         type: choice
